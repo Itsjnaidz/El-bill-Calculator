@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account</title>
+  <link rel="stylesheet" href="CSS/register.css" />
+  <!-- Small focused overrides: remove underlines and size icons -->
+  <style>
+    a { text-decoration: none; color: inherit; }
+    .left-icon, .btn-icon { display: inline-flex; width: 18px; height: 18px; flex-shrink: 0; vertical-align: middle; }
+    .submit-btn { display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+    .login-text a { display: inline-flex; align-items: center; gap: 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-box">
+      <span class="left-icon" aria-hidden="true">
+        <!-- user-plus icon -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="9" cy="8" r="3" fill="currentColor"/>
+          <path d="M2 20c1.5-3 5-5 7-5s5.5 2 7 5" fill="currentColor"/>
+          <path d="M20 8v6M23 11h-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+
+      <h2>Hello,</h2>
+      <h1>Create Account!</h1>
+      <p class="subtitle">
+        Join the Electricity Bill Management System.<br>
+        Create an account to track your bills.
+      </p>
+    </div>
+
+    <!-- RIGHT FORM -->
+    <div class="right-box">
+      <form id="registerForm" onsubmit="event.preventDefault(); handleRegister();">
+        <label for="reg_name">Full Name</label>
+        <input type="text" id="reg_name" placeholder="Your full name" required />
+
+        <label for="reg_email">Email</label>
+        <input type="email" id="reg_email" placeholder="example@gmail.com" required />
+
+        <label for="reg_password">Password</label>
+        <input type="password" id="reg_password" placeholder="Enter password" required />
+
+        <label for="reg_confirm_password">Confirm Password</label>
+        <input type="password" id="reg_confirm_password" placeholder="Confirm password" required />
+
+        <button type="submit" class="submit-btn">
+          <span class="btn-icon" aria-hidden="true">
+            <!-- signup icon (user-check) -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="8" r="3" fill="currentColor"/>
+              <path d="M2 20c1.5-3 5-5 7-5s5.5 2 7 5" fill="currentColor"/>
+              <path d="M17 11l3 3 5-5" transform="translate(-12 -3)" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          Sign up
+        </button>
+
+        <p class="login-text">
+          Already have an account?
+          <a href="login.html">
+            <span>Log in</span>
+            <span class="btn-icon" aria-hidden="true">
+              <!-- arrow-right icon -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </a>
+        </p>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script>
+    // Redirect if already logged in
+    document.addEventListener("DOMContentLoaded", async () => {
+      await redirectIfAuthenticated();
+    });
+
+    async function handleRegister() {
+      const name = document.getElementById("reg_name").value;
+      const email = document.getElementById("reg_email").value;
+      const password = document.getElementById("reg_password").value;
+      const confirmPassword = document.getElementById("reg_confirm_password").value;
+
+      if (!name || !email || !password || !confirmPassword) {
+        alert("Please fill in all fields!");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters long!");
+        return;
+      }
+
+      const submitBtn = document.querySelector('.submit-btn');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Registering...";
+      submitBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: { full_name: name }
+          }
+        });
+
+        if (error) {
+          alert("Registration failed: " + error.message);
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+          return;
+        }
+
+        alert("Registration successful! Please check your email to verify your account, then login.");
+        window.location.href = "login.html";
+      } catch (err) {
+        alert("An error occurred: " + err.message);
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function redirectIfAuthenticated() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        window.location.href = "user_dashboard.html";
+      }
+    }
+  </script>
+</body>
+</html>

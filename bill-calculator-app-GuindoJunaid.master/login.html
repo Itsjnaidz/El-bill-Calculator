@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Electricity Bill Login</title>
+  <link rel="stylesheet" href="CSS/login.css" />
+  <style>
+    /* Small overrides: remove underlines and size icons */
+    a { text-decoration: none; color: inherit; }
+    .left-icon, .btn-icon, .social-icon { display:inline-flex; width:18px; height:18px; flex-shrink:0; vertical-align:middle; }
+    .signin-btn { display:inline-flex; align-items:center; gap:10px; justify-content:center; }
+    .social-buttons button { display:flex; align-items:center; gap:10px; justify-content:center; }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="container">
+
+      <!-- LEFT SIDE -->
+      <div class="left-box">
+        <span class="left-icon" aria-hidden="true" style="display:inline-block;margin-bottom:8px;">
+          <!-- bolt icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 2L3 14h7l-1 8L21 10h-7l1-8z" fill="currentColor"/>
+          </svg>
+        </span>
+        <h1>Electricity Bill</h1>
+        <p class="hello">Hello,</p>
+        <h2>Welcome!</h2>
+
+        <p class="desc">
+
+
+Welcome to the Electric Bill Management System.
+Please sign in to manage, calculate, and track your electricity usage easily and efficiently.
+        </p>
+      </div>
+
+      <!-- RIGHT SIDE LOGIN FORM -->
+      <div class="login-box">
+        <h2 class="form-title">Sign In</h2>
+
+        <form onsubmit="event.preventDefault(); handleLogin();">
+
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Your email" required>
+
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+
+          <button class="signin-btn" type="submit">
+            <span class="btn-icon" aria-hidden="true">
+              <!-- login icon -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 17l5-5-5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15 12H3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Sign In
+          </button>
+
+          <a class="forgot" href="#">Forgot password?</a>
+
+          <div class="social-buttons">
+            <button type="button" class="google">
+              <span class="social-icon" aria-hidden="true">
+                <!-- Google G icon (simplified) -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 12.3c0-.6-.1-1.2-.2-1.8H12v3.4h5.4c-.2 1-1.1 2.6-2.7 3.4l0.02 0.14 3.9 3c2.3-2.1 3.6-5.3 3.6-8.9z" fill="#4285F4"/>
+                  <path d="M12 22c2.7 0 5-0.9 6.7-2.5l-3.9-3c-1 0.7-2.3 1.2-3.7 1.2-2.9 0-5.3-1.9-6.2-4.5l-0.13 0.01L2 17.4C3.7 20.9 7.5 22 12 22z" fill="#34A853"/>
+                  <path d="M5.8 13.2c-.2-.6-.3-1.2-.3-1.8s.1-1.2.3-1.8l-3.8-3.0C1 8.8 0.7 10.3 0.7 12s0.3 3.2 0.8 4.4l4.3-3.2z" fill="#FBBC05"/>
+                  <path d="M12 6.5c1.5 0 2.8.5 3.8 1.4l2.9-2.9C17 3.1 14.7 2 12 2 7.5 2 3.7 3.1 2 6.6l4.3 3.2C6.7 8.4 9.1 6.5 12 6.5z" fill="#EA4335"/>
+                </svg>
+              </span>
+              Continue with Google
+            </button>
+
+            <button type="button" class="facebook">
+              <span class="social-icon" aria-hidden="true">
+                <!-- Facebook F icon (simplified) -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 12.1C22 6.6 17.5 2 12 2S2 6.6 2 12.1c0 5 3.7 9.1 8.5 9.9v-7h-2.6V12h2.6V9.7c0-2.6 1.6-4 4-4 1.1 0 2.3.2 2.3.2v2.5h-1.3c-1.3 0-1.7.8-1.7 1.6V12h2.9l-.5 2v7C18.3 21.2 22 17.1 22 12.1z" fill="#1877F2"/>
+                </svg>
+              </span>
+              Continue with Facebook
+            </button>
+          </div>
+
+          <a href="register.html" class="signup-btn">Create account</a>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const session = await checkAuth();
+      if (session) window.location.href = "user_dashboard.html";
+    });
+
+    async function handleLogin() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const btn = document.querySelector(".signin-btn");
+      btn.textContent = "Signing in...";
+      btn.disabled = true;
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        alert("Login failed: " + error.message);
+        btn.textContent = "Sign In";
+        btn.disabled = false;
+        return;
+      }
+
+      window.location.href = "user_dashboard.html";
+    }
+  </script>
+</body>
+</html>
